@@ -1,0 +1,102 @@
+﻿@model IEnumerable<ST10072500_CLDV6211_Part2.Models.Product>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .artwork-image {
+        width: 200px;
+        height: 200px; /* Adjust the height as needed */
+        border: 1px solid #ccc;
+        object-fit: cover;
+    }
+
+    .card-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-body {
+        padding-top: 90px; 
+    }
+
+    .card-footer {
+        display: flex;
+        
+    }
+
+    .card-footer a {
+        margin: 0 5px; 
+    }
+
+    .card-title {
+        text-decoration: underline;
+        color: brown;
+        text-align: center;
+    }
+
+</style>
+
+<div class="container" style="text-align:center">
+    <h1>KhumaloCraft Work Page</h1>
+    <p>
+        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+        {
+            <a asp-action="Create">Create New</a>
+        }
+    </p>
+</div>
+
+<div class="card-group">
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div style="width: 200px; height: 150px; display: flex; justify-content: center; align-items: flex-start; padding-top: 20px;">
+                <img src="data:image;base64,@(item.ArtImg)" class="artwork-image" alt="Artwork Image">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayFor(modelItem => item.ArtName)</h5>
+                <p class="card-text">
+                    <strong>Creator:</strong> @Html.DisplayFor(modelItem => item.ArtCreatorName)<br>
+                    <strong>Price:</strong> R @Html.DisplayFor(modelItem => item.ArtPrice)<br>
+                    <strong>Category:</strong> @Html.DisplayFor(modelItem => item.ArtCategory)<br>
+                    <strong>Availability:</strong>
+                    @if (item.ArtAvailability)
+                    {
+                        <span>In Stock</span>
+                        <a asp-action="Order" asp-route-id="@item.ArtId" class="btn btn-primary" style="margin: 10px auto; ">Order</a>
+                    }
+                    else
+                    {
+                        <span>Out of Stock</span>
+                        
+                    }
+
+                </p>
+            </div>
+            <div class="card-footer">
+                <td>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.ArtId">Edit |</a> 
+                        <a asp-action="Details" asp-route-id="@item.ArtId">Details |</a> 
+                        <a asp-action="Delete" asp-route-id="@item.ArtId">Delete</a>
+                    }
+                </td>
+                    
+            </div>
+                    
+        </div>
+    }
+</div>
